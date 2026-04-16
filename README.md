@@ -13,7 +13,7 @@ A 3D interactive visualizer for your [AudioMuse-AI](https://github.com/NeptuneHu
 
 ## Adding to your AudioMuse stack
 
-Add a single service to your existing `docker-compose.yml`:
+Add a single service to your existing AudioMuse `docker-compose.yml`:
 
 ```yaml
 services:
