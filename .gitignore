@@ -4,6 +4,9 @@
 # Claude Code context (local dev only)
 CLAUDE.md
 
+# Local test data
+test-data/
+
 # Generated data
 shared/*.json
 

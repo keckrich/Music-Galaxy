@@ -5,7 +5,7 @@ import * as Particles from './scene/particles';
 import { applyColors } from './scene/colors';
 import { applyTheme } from './scene/theme';
 import { SONGS, N, loadSongs } from './core/data';
-import { settings } from './core/settings';
+import { settings, saveSettings } from './core/settings';
 import { loadConfig } from './core/config';
 import type { ColorMode } from './core/types';
 
@@ -25,6 +25,24 @@ const loadingMsg = document.getElementById('loading-msg')!;
 
 function setStatus(msg: string): void {
   loadingMsg.textContent = msg;
+}
+
+// If the default library fails to load, try to fall back to the first
+// available uploaded library. Returns true if recovery succeeded.
+async function tryFallbackLibrary(): Promise<boolean> {
+  try {
+    const res = await fetch('/api/libraries');
+    if (!res.ok) return false;
+    const libs = await res.json() as Array<{ name: string; isDefault: boolean }>;
+    const fallback = libs.find(l => !l.isDefault);
+    if (!fallback) return false;
+    settings.activeLibrary = fallback.name;
+    saveSettings(settings);
+    await loadSongs(fallback.name);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 // Poll /api/status while generating so we can show progress
@@ -47,7 +65,13 @@ async function init(): Promise<void> {
   await loadConfig();
 
   try {
-    await loadSongs(settings.activeLibrary || undefined);
+    const result = await loadSongs(settings.activeLibrary || undefined);
+    if (result.noDefault) {
+      // No default library (Postgres not configured, generation failed, etc.).
+      // Try to auto-load the first available uploaded library; if none exist,
+      // continue into the app with an empty galaxy.
+      await tryFallbackLibrary();
+    }
   } catch (err: unknown) {
     clearInterval(pollTimer);
     const msg = err instanceof Error ? err.message : String(err);
@@ -68,8 +92,9 @@ async function init(): Promise<void> {
   });
 
   // Header subtitle
-  document.getElementById('sub')!.textContent =
-    `${N} songs · ${new Set(SONGS.map(s => s.author)).size} artists · 3D audio similarity`;
+  document.getElementById('sub')!.textContent = N > 0
+    ? `${N} songs · ${new Set(SONGS.map(s => s.author)).size} artists · 3D audio similarity`
+    : 'No library loaded — upload a songs.json via the settings panel (⚙) to get started';
 
   // Color mode buttons
   applyColors(settings.colorMode);
@@ -133,8 +158,9 @@ async function reinitGalaxy(): Promise<void> {
   Particles.initParticles(SONGS);
   applyColors(settings.colorMode);
 
-  document.getElementById('sub')!.textContent =
-    `${N} songs · ${new Set(SONGS.map(s => s.author)).size} artists · 3D audio similarity`;
+  document.getElementById('sub')!.textContent = N > 0
+    ? `${N} songs · ${new Set(SONGS.map(s => s.author)).size} artists · 3D audio similarity`
+    : 'No library loaded — upload a songs.json via the settings panel (⚙) to get started';
 }
 
 // ── Refresh data (called from settings panel button) ──────────────────

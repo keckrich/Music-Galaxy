@@ -76,12 +76,6 @@ def _unique_library_name(name: str) -> str:
         n += 1
 
 
-def _check_library_mgmt():
-    """Return a 409 response if library management is disabled via SONGS_FILE env var."""
-    if os.environ.get('SONGS_FILE'):
-        return jsonify({'error': 'Library management disabled — SONGS_FILE env var is set'}), 409
-    return None
-
 
 # ── Metadata envelope helpers ─────────────────────────────────────────────
 
@@ -114,6 +108,13 @@ def _extract_songs(data: object) -> tuple[list, bool]:
 # ── Data generation (production only) ────────────────────────────────────
 
 def _generate() -> list:
+    if not os.getenv('POSTGRES_HOST'):
+        raise RuntimeError(
+            'No song library found and Postgres is not configured. '
+            'Upload a songs.json via the settings panel (⚙), or set the '
+            'POSTGRES_HOST environment variable to auto-generate one.'
+        )
+
     try:
         import psycopg2
         import numpy as np
@@ -226,6 +227,25 @@ def _bg_generate() -> None:
             _generating = False
 
 
+def _find_default_in_shared() -> str | None:
+    """Scan SHARED_DIR for the first JSON file whose envelope has isDefault=True."""
+    if not os.path.exists(SHARED_DIR):
+        return None
+    for fname in sorted(os.listdir(SHARED_DIR)):
+        if not fname.endswith('.json') or fname.startswith('.'):
+            continue
+        fpath = os.path.join(SHARED_DIR, fname)
+        try:
+            with open(fpath) as f:
+                raw = json.load(f)
+            _, is_default = _extract_songs(raw)
+            if is_default:
+                return fpath
+        except Exception:
+            continue
+    return None
+
+
 def _ensure_songs(name: str | None = None) -> list | None:
     """Load songs for the given library filename. Falls back to default if not found."""
     global _generating, _generate_error
@@ -234,7 +254,6 @@ def _ensure_songs(name: str | None = None) -> list | None:
         safe = os.path.basename(name)
         path = os.path.join(SHARED_DIR, safe)
         if not os.path.exists(path):
-            # Library not found — fall back to default
             safe = _DEFAULT_NAME
             path = SONGS_FILE
     else:
@@ -254,12 +273,25 @@ def _ensure_songs(name: str | None = None) -> list | None:
         print(f'Loaded {len(songs)} songs from {safe}', flush=True)
         return songs
 
-    # Only auto-generate for the default file in production
-    if safe == _DEFAULT_NAME and ENVIRONMENT == 'production':
+    # Default file not at expected path — scan for any isDefault file, then try generation.
+    if safe == _DEFAULT_NAME:
+        default_path = _find_default_in_shared()
+        if default_path:
+            try:
+                with open(default_path) as f:
+                    raw = json.load(f)
+                songs, _ = _extract_songs(raw)
+                with _lock:
+                    _cache[_DEFAULT_NAME] = songs
+                print(f'Loaded default from {os.path.basename(default_path)}', flush=True)
+                return songs
+            except Exception:
+                pass
+
+        # No default found — attempt Postgres generation once (any environment).
         with _lock:
-            if not _generating:
-                _generating     = True
-                _generate_error = None
+            if not _generating and _generate_error is None:
+                _generating = True
                 threading.Thread(target=_bg_generate, daemon=True).start()
         return None
 
@@ -377,17 +409,22 @@ def api_status():
 
 @app.route('/api/songs')
 def api_songs():
-    if _generate_error:
-        return jsonify({'error': _generate_error}), 500
-    if _generating:
-        return jsonify({'status': 'generating', 'message': 'Computing 3D song map...'}), 202
-
     library = request.args.get('library') or None
-    songs   = _ensure_songs(library)
+
+    # Named library requests always go straight to disk regardless of generation state.
+    # Generation state only gates the default library.
+    if not library:
+        if _generating:
+            return jsonify({'status': 'generating', 'message': 'Computing 3D song map...'}), 202
+        if _generate_error:
+            return jsonify({'error': _generate_error, 'no_default': True}), 503
+
+    songs = _ensure_songs(library)
     if songs is None:
-        if ENVIRONMENT == 'development':
-            return jsonify({'error': 'No songs file found — run: python fetch_data.py'}), 404
-        return jsonify({'status': 'generating', 'message': 'Starting...'}), 202
+        if not library:
+            # _ensure_songs just kicked off generation — tell the client to poll
+            return jsonify({'status': 'generating', 'message': 'Starting...'}), 202
+        return jsonify({'error': f'Library not found: {library}'}), 404
 
     return jsonify(songs)
 
@@ -411,11 +448,6 @@ def api_export():
 @app.route('/api/refresh', methods=['POST'])
 def api_refresh():
     global _generating, _generate_error
-
-    if ENVIRONMENT != 'production':
-        return jsonify({
-            'error': 'Refresh not available in dev mode. Re-run fetch_data.py and restart the server.'
-        }), 400
 
     with _lock:
         if _generating:
@@ -463,9 +495,6 @@ def api_libraries():
 @app.route('/api/libraries/upload', methods=['POST'])
 def api_libraries_upload():
     global _cache
-    guard = _check_library_mgmt()
-    if guard:
-        return guard
 
     if 'file' not in request.files:
         return jsonify({'error': 'No file provided'}), 400
@@ -520,9 +549,6 @@ def api_libraries_upload():
 @app.route('/api/libraries/rename', methods=['PATCH'])
 def api_libraries_rename():
     global _cache
-    guard = _check_library_mgmt()
-    if guard:
-        return guard
 
     data = request.get_json() or {}
     from_name = os.path.basename(data.get('from', '').strip())
@@ -553,9 +579,6 @@ def api_libraries_rename():
 
 @app.route('/api/libraries/<name>', methods=['DELETE'])
 def api_libraries_delete(name: str):
-    guard = _check_library_mgmt()
-    if guard:
-        return guard
 
     safe_name = os.path.basename(name)
     target = os.path.join(SHARED_DIR, safe_name)
