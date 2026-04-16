@@ -1,0 +1,47 @@
+@use '../../styles/tokens' as *;
+
+#tip {
+  position: fixed;
+  background: var(--tip-bg);
+  border: 1px solid var(--border-hi);
+  border-radius: $radius-lg;
+  padding: 11px 15px;
+  font-size: $font-md;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s;
+  z-index: $z-tooltip;
+  max-width: 230px;
+  backdrop-filter: blur(10px);
+
+  &.v { opacity: 1; }
+}
+
+.tt {
+  font-size: $font-xl;
+  font-weight: 500;
+  margin-bottom: 3px;
+  line-height: 1.3;
+  color: var(--text-1);
+}
+
+.ta {
+  color: var(--text-2);
+  margin-bottom: 8px;
+  font-size: $font-md;
+}
+
+.tg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+
+  span {
+    background: var(--btn-bg);
+    border-radius: 3px;
+    padding: 2px 7px;
+    font-size: $font-xs;
+    letter-spacing: $ls-base;
+    color: var(--text-2);
+  }
+}

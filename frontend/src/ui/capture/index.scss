@@ -1,0 +1,229 @@
+@use '../../styles/tokens' as *;
+
+// ── Overlay ───────────────────────────────────────────────────────────
+#capture-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: $z-modal;
+  align-items: center;
+  justify-content: center;
+}
+
+// ── Box ───────────────────────────────────────────────────────────────
+.capture-box {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: $radius-lg;
+  width: 340px;
+  padding: 24px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.capture-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  > span {
+    font-size: $font-md;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+}
+
+#capture-close {
+  background: none;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+
+  &:hover { color: var(--text-2); }
+}
+
+// ── Options ───────────────────────────────────────────────────────────
+.capture-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  > span {
+    font-size: $font-sm;
+    color: var(--text-3);
+    flex-shrink: 0;
+  }
+}
+
+.fmt-btns,
+.dur-btns {
+  display: flex;
+  gap: 5px;
+}
+
+.fmt-btn,
+.dur-btn {
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: $radius-sm;
+  color: var(--text-3);
+  font-family: inherit;
+  font-size: $font-sm;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover { border-color: var(--border-hi); color: var(--text-2); }
+
+  &.active {
+    background: var(--active-bg);
+    border-color: var(--active-border);
+    color: var(--active-color);
+  }
+}
+
+#capture-res {
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: $radius-sm;
+  color: var(--text-2);
+  font-family: inherit;
+  font-size: $font-sm;
+  padding: 4px 8px;
+  cursor: pointer;
+  outline: none;
+
+  &:focus { border-color: var(--border-hi); }
+}
+
+#capture-render {
+  width: 100%;
+  padding: 9px;
+  background: none;
+  border: 1px solid var(--btn-border);
+  border-radius: $radius-sm;
+  color: var(--text-3);
+  font-family: inherit;
+  font-size: $font-sm;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) { border-color: var(--border-hi); color: var(--text-2); }
+  &:disabled { opacity: 0.4; cursor: default; }
+}
+
+// ── Progress ──────────────────────────────────────────────────────────
+#capture-progress {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0 4px;
+}
+
+.capture-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: cap-spin 0.8s linear infinite;
+}
+
+@keyframes cap-spin {
+  to { transform: rotate(360deg); }
+}
+
+#capture-status {
+  font-size: $font-sm;
+  color: var(--text-3);
+  letter-spacing: $ls-base;
+}
+
+.capture-bar {
+  width: 100%;
+  height: 3px;
+  background: var(--bar-bg);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+#capture-fill {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  transition: width 0.1s linear;
+  border-radius: 2px;
+}
+
+// ── Result ────────────────────────────────────────────────────────────
+#capture-result {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#capture-preview {
+  width: 100%;
+  border-radius: $radius-md;
+  border: 1px solid var(--border);
+  background: #000;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.capture-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#capture-download,
+#capture-copy-link {
+  width: 100%;
+  padding: 9px;
+  background: none;
+  border: 1px solid var(--btn-border);
+  border-radius: $radius-sm;
+  color: var(--text-3);
+  font-family: inherit;
+  font-size: $font-sm;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all $transition-fast;
+  text-align: center;
+
+  &:hover { border-color: var(--border-hi); color: var(--text-2); }
+}
+
+// ── HUD share button ──────────────────────────────────────────────────
+#capture-btn {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: $radius-sm;
+  color: var(--text-3);
+  font-family: inherit;
+  font-size: $font-sm;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  padding: 7px 13px;
+  cursor: pointer;
+  transition: all $transition-fast;
+  z-index: $z-ui;
+
+  &:hover { border-color: var(--border-hi); color: var(--text-2); }
+}

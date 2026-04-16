@@ -1,0 +1,114 @@
+@use '../../styles/tokens' as *;
+
+// ── Left overlay (title + color mode buttons + stats) ─────────────────
+#ui {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: $z-ui;
+  pointer-events: none;
+}
+
+#title {
+  font-size: $font-2xl;
+  font-weight: 300;
+  letter-spacing: 4px;
+  color: var(--text-1);
+  text-transform: uppercase;
+}
+
+#sub {
+  font-size: $font-xs;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+
+#modes {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  pointer-events: all;
+}
+
+.mb {
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  color: var(--btn-color);
+  padding: 5px 11px;
+  border-radius: $radius-sm;
+  font-size: $font-xs;
+  letter-spacing: $ls-wider;
+  cursor: pointer;
+  transition: all $transition-fast;
+  text-transform: uppercase;
+
+  &:hover  { background: var(--btn-hover); color: var(--active-color); }
+  &.active { background: var(--active-bg); border-color: var(--active-border); color: var(--active-color); }
+}
+
+#stats {
+  margin-top: 14px;
+  font-size: $font-xs;
+  color: var(--text-4);
+  letter-spacing: $ls-wide;
+  line-height: 1.8;
+}
+
+// ── Bottom hint ───────────────────────────────────────────────────────
+#hint {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: $font-xs;
+  letter-spacing: $ls-widest;
+  color: var(--text-4);
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+// ── Clear selection button ─────────────────────────────────────────────
+#reset {
+  position: fixed;
+  bottom: 18px;
+  right: 20px;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  color: var(--text-3);
+  padding: 6px 14px;
+  border-radius: $radius-sm;
+  font-size: $font-xs;
+  letter-spacing: $ls-wide;
+  cursor: pointer;
+  transition: all $transition-fast;
+  display: none;
+  text-transform: uppercase;
+
+  &:hover { background: var(--btn-hover); color: var(--active-color); }
+}
+
+// ── Settings gear button ──────────────────────────────────────────────
+#settings-btn {
+  position: fixed;
+  bottom: 18px;
+  left: 20px;
+  width: 32px;
+  height: 32px;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  color: var(--btn-color);
+  border-radius: $radius-md;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: $z-ui;
+  transition: all $transition-fast;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+
+  &:hover  { background: var(--btn-hover); color: var(--active-color); }
+  &.active { background: var(--active-bg); border-color: var(--active-border); color: var(--active-color); }
+}

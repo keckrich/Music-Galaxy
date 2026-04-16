@@ -1,0 +1,138 @@
+@use '../../styles/tokens' as *;
+
+// ── Slide-in panel ────────────────────────────────────────────────────
+#settings-panel {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: $settings-width;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  padding: 24px 20px;
+  transform: translateX(-100%);
+  transition: transform $transition-med ease;
+  z-index: $z-settings;
+  overflow-y: auto;
+  backdrop-filter: blur(20px);
+
+  &.open { transform: translateX(0); }
+}
+
+#sp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+
+  > span {
+    font-size: $font-md;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+}
+
+#sp-close {
+  background: none;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+
+  &:hover { color: var(--text-2); }
+}
+
+// ── Sections ──────────────────────────────────────────────────────────
+.sp-section {
+  margin-bottom: 22px;
+
+  h3 {
+    font-size: $font-xs;
+    letter-spacing: $ls-widest;
+    color: var(--text-label);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+}
+
+.sp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  cursor: default;
+
+  > span:first-child {
+    font-size: $font-sm;
+    color: var(--text-3);
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+// ── Form controls ─────────────────────────────────────────────────────
+input[type='range'] {
+  width: 90px;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+input[type='checkbox'] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+select.sp-select {
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: $radius-sm;
+  color: var(--text-2);
+  font-family: inherit;
+  font-size: $font-sm;
+  padding: 4px 8px;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+
+  &:focus { border-color: var(--border-hi); }
+}
+
+.sv {
+  font-size: $font-sm;
+  color: var(--text-3);
+  width: 30px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+// ── Bottom buttons ────────────────────────────────────────────────────
+#sp-reset,
+#sp-refresh,
+#sp-export {
+  display: block;
+  width: 100%;
+  padding: 9px;
+  background: none;
+  border: 1px solid var(--btn-border);
+  border-radius: $radius-sm;
+  color: var(--text-3);
+  font-family: inherit;
+  font-size: $font-sm;
+  letter-spacing: $ls-wide;
+  cursor: pointer;
+  transition: all $transition-fast;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: center;
+  box-sizing: border-box;
+  margin-top: 4px;
+
+  &:hover:not(:disabled) { border-color: var(--border-hi); color: var(--text-2); }
+  &:disabled { opacity: 0.4; cursor: default; }
+}

@@ -1,0 +1,7 @@
+// Global styles — imported once in main.ts.
+// Component-specific styles live next to their .ts files and are
+// imported there (e.g. ui/panel/index.ts imports ./index.scss).
+
+@use './styles/variables';   // CSS custom properties + .theme-* classes
+@use './styles/base';        // reset, body, canvas, scrollbar
+@use './ui/hud/index';       // title, color-mode buttons, hint, reset, gear btn

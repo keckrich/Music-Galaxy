@@ -1,0 +1,146 @@
+@use '../../styles/tokens' as *;
+
+#panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: $panel-width;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border);
+  padding: 28px 22px;
+  transform: translateX(100%);
+  transition: transform $transition-med ease;
+  z-index: $z-panel;
+  overflow-y: auto;
+  backdrop-filter: blur(20px);
+
+  &.open { transform: translateX(0); }
+}
+
+#pc {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+
+  &:hover { color: var(--text-2); }
+}
+
+#pt  { font-size: $font-3xl; font-weight: 500; margin-bottom: 5px; line-height: 1.3; color: var(--text-1); }
+#pa  { color: var(--text-2); font-size: $font-lg; margin-bottom: 3px; }
+#pal { color: var(--text-3); font-size: $font-xs; margin-bottom: 18px; letter-spacing: $ls-base; }
+
+// Section container
+.ps {
+  margin-bottom: 18px;
+
+  h3 {
+    font-size: $font-xs;
+    letter-spacing: $ls-widest;
+    color: var(--text-label);
+    margin-bottom: 9px;
+    text-transform: uppercase;
+  }
+}
+
+// Feature bar row
+.fr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 7px;
+}
+
+.fl { font-size: $font-sm; color: var(--text-3); }
+
+.fb {
+  width: 90px;
+  height: 3px;
+  background: var(--bar-bg);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ff {
+  height: 100%;
+  border-radius: 2px;
+  transition: width $transition-bar;
+}
+
+#p-key,
+#p-tempo,
+#p-year { font-size: $font-md; color: var(--text-2); }
+
+// Mood tags
+.mt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+
+  span {
+    background: var(--btn-bg);
+    border-radius: 3px;
+    padding: 3px 8px;
+    font-size: $font-xs;
+    letter-spacing: $ls-base;
+    color: var(--text-2);
+  }
+}
+
+// Audio player
+audio {
+  width: 100%;
+  margin-top: 10px;
+  filter: invert(1) hue-rotate(180deg);
+  opacity: 0.7;
+}
+
+// Open in <provider> links
+#provider-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.provider-btn {
+  display: block;
+  width: 100%;
+  padding: 9px;
+  background: none;
+  border: 1px solid var(--btn-border);
+  border-radius: $radius-sm;
+  color: var(--text-3);
+  font-size: $font-xs;
+  letter-spacing: $ls-wide;
+  cursor: pointer;
+  transition: all $transition-fast;
+  text-align: center;
+  text-decoration: none;
+
+  &:hover { border-color: var(--border-hi); color: var(--text-2); }
+}
+
+// Similar songs list
+#simlist {
+  list-style: none;
+  margin-top: 4px;
+
+  li {
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover .sl { color: var(--active-color); }
+  }
+}
+
+.sl { font-size: $font-md; color: var(--text-2); }
+.sa { font-size: $font-xs; color: var(--text-3); margin-top: 1px; letter-spacing: $ls-base; }

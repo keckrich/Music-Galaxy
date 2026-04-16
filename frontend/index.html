@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music Galaxy</title>
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+</head>
+<body>
+  <!-- Loading overlay — hidden after songs are fetched -->
+  <div id="loading">
+    <div id="loading-inner">
+      <img src="/logo.svg" id="loading-logo" alt="Music Galaxy" width="72" height="72" />
+      <div id="loading-title">Music Galaxy</div>
+      <div id="loading-msg">Connecting to server…</div>
+      <div id="loading-spinner"></div>
+    </div>
+  </div>
+
+  <canvas id="c"></canvas>
+
+  <div id="ui">
+    <div id="title">Music Galaxy</div>
+    <div id="sub"></div>
+    <div id="modes">
+      <button class="mb active" data-mode="energy">Color: Energy</button>
+      <button class="mb" data-mode="genre">Color: Genre</button>
+      <button class="mb" data-mode="key">Color: Key</button>
+      <button class="mb" data-mode="decade">Color: Decade</button>
+      <button class="mb" data-mode="antipode">Color: Antipode</button>
+    </div>
+    <div id="stats"></div>
+  </div>
+
+  <div id="tip">
+    <div class="tt" id="tt"></div>
+    <div class="ta" id="ta"></div>
+    <div class="tg" id="tg"></div>
+  </div>
+
+  <div id="panel">
+    <button id="pc" onclick="window.__closePanel()">&#x2715;</button>
+    <div id="pt"></div>
+    <div id="pa"></div>
+    <div id="pal"></div>
+
+    <div class="ps">
+      <h3>Sound</h3>
+      <div class="fr"><span class="fl">Energy</span><div class="fb"><div class="ff" id="f-energy" style="background:#ff6644"></div></div></div>
+      <div class="fr"><span class="fl">Danceable</span><div class="fb"><div class="ff" id="f-dance" style="background:#44ccff"></div></div></div>
+      <div class="fr"><span class="fl">Happy</span><div class="fb"><div class="ff" id="f-happy" style="background:#ffcc44"></div></div></div>
+      <div class="fr"><span class="fl">Relaxed</span><div class="fb"><div class="ff" id="f-relax" style="background:#44ff88"></div></div></div>
+      <div class="fr"><span class="fl">Aggressive</span><div class="fb"><div class="ff" id="f-aggr" style="background:#ff4466"></div></div></div>
+      <div class="fr"><span class="fl">Sad</span><div class="fb"><div class="ff" id="f-sad" style="background:#8866ff"></div></div></div>
+    </div>
+
+    <div class="ps">
+      <h3>Info</h3>
+      <div class="fr"><span class="fl">Key</span><span id="p-key"></span></div>
+      <div class="fr"><span class="fl">Tempo</span><span id="p-tempo"></span></div>
+      <div class="fr"><span class="fl">Year</span><span id="p-year"></span></div>
+    </div>
+
+    <div class="ps">
+      <h3>Mood Tags</h3>
+      <div class="mt" id="p-mood"></div>
+    </div>
+
+    <div class="ps">
+      <h3>Play</h3>
+      <audio id="aud" controls></audio>
+      <div id="provider-links"></div>
+    </div>
+
+    <div class="ps">
+      <h3>Similar Songs</h3>
+      <ul id="simlist"></ul>
+    </div>
+  </div>
+
+  <!-- Settings panel (slides from left) -->
+  <div id="settings-panel">
+    <div id="sp-header">
+      <span>Settings</span>
+      <button id="sp-close">&#x2715;</button>
+    </div>
+
+    <div class="sp-section">
+      <h3>Appearance</h3>
+      <label class="sp-row">
+        <span>Theme</span>
+        <select class="sp-select" id="s-theme">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="default">Default (OS)</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="sp-section">
+      <h3>Camera</h3>
+      <label class="sp-row">
+        <span>Auto-rotate</span>
+        <input type="checkbox" id="s-autorotate" />
+      </label>
+      <label class="sp-row">
+        <span>Rotate speed</span>
+        <input type="range" id="s-rotatespeed" min="0.05" max="2" step="0.05" />
+        <span class="sv" id="sv-rotatespeed"></span>
+      </label>
+    </div>
+
+    <div class="sp-section">
+      <h3>Particles</h3>
+      <label class="sp-row">
+        <span>Glow</span>
+        <input type="range" id="s-glow" min="80" max="320" step="10" />
+        <span class="sv" id="sv-glow"></span>
+      </label>
+      <label class="sp-row">
+        <span>Size</span>
+        <input type="range" id="s-size" min="0.3" max="2.5" step="0.1" />
+        <span class="sv" id="sv-size"></span>
+      </label>
+      <label class="sp-row">
+        <span>Physics</span>
+        <input type="range" id="s-physics" min="0" max="3" step="0.1" />
+        <span class="sv" id="sv-physics"></span>
+      </label>
+    </div>
+
+    <div class="sp-section">
+      <h3>Exploration</h3>
+      <label class="sp-row">
+        <span>Neighbor count</span>
+        <input type="range" id="s-neighbors" min="3" max="30" step="1" />
+        <span class="sv" id="sv-neighbors"></span>
+      </label>
+      <label class="sp-row">
+        <span>Dim brightness</span>
+        <input type="range" id="s-dim" min="0" max="1" step="0.01" />
+        <span class="sv" id="sv-dim"></span>
+      </label>
+    </div>
+
+    <div class="sp-section" id="sp-media-source" style="display:none">
+      <h3>Media Source</h3>
+      <label class="sp-row">
+        <span>Play from</span>
+        <select class="sp-select" id="s-media-source"></select>
+      </label>
+    </div>
+
+    <div class="sp-section" id="sp-libraries">
+      <h3>Libraries</h3>
+      <ul id="lib-list"></ul>
+      <label class="sp-row sp-upload-row">
+        <span>Upload library</span>
+        <input type="file" id="lib-upload" accept=".json" style="display:none" />
+        <button id="lib-upload-btn">Choose file</button>
+      </label>
+    </div>
+
+    <button id="sp-reset">Reset to defaults</button>
+    <button id="sp-refresh" onclick="window.__refreshData()">Refresh Data</button>
+    <a id="sp-export" href="/api/export" download>Export library</a>
+  </div>
+
+  <button id="settings-btn" title="Settings">&#x2699;</button>
+
+  <div id="search-wrap">
+    <input id="search-input" type="text" placeholder="Search songs, artists, albums…" autocomplete="off" spellcheck="false" />
+    <div id="search-results"></div>
+  </div>
+
+  <div id="hint">Drag to orbit &bull; Scroll to zoom &bull; Click a star</div>
+  <button id="reset" onclick="window.__resetView()">Clear selection</button>
+
+  <!-- Share / capture button -->
+  <button id="capture-btn">Share Galaxy</button>
+
+  <!-- Capture modal -->
+  <div id="capture-modal">
+    <div class="capture-box">
+      <div class="capture-header">
+        <span>Share Galaxy</span>
+        <button id="capture-close">&#x2715;</button>
+      </div>
+
+      <!-- Step 1: options -->
+      <div id="capture-options">
+        <div class="capture-row">
+          <span>Format</span>
+          <div class="fmt-btns">
+            <button class="fmt-btn active" data-fmt="mp4">MP4</button>
+            <button class="fmt-btn" data-fmt="mov">MOV</button>
+            <button class="fmt-btn" data-fmt="webm">WebM</button>
+          </div>
+        </div>
+        <div class="capture-row">
+          <span>Duration</span>
+          <div class="dur-btns">
+            <button class="dur-btn" data-sec="5">5s</button>
+            <button class="dur-btn active" data-sec="10">10s</button>
+            <button class="dur-btn" data-sec="20">20s</button>
+          </div>
+        </div>
+        <div class="capture-row">
+          <span>Resolution</span>
+          <select id="capture-res">
+            <option value="720p" selected>720p</option>
+            <option value="1080p">1080p</option>
+          </select>
+        </div>
+        <button id="capture-render">Render video</button>
+      </div>
+
+      <!-- Step 2: progress -->
+      <div id="capture-progress">
+        <div class="capture-spinner"></div>
+        <div id="capture-status">Rendering…</div>
+        <div class="capture-bar"><div id="capture-fill"></div></div>
+      </div>
+
+      <!-- Step 3: result -->
+      <div id="capture-result">
+        <video id="capture-preview" autoplay loop muted playsinline></video>
+        <div class="capture-actions">
+          <button id="capture-download">Download .webm</button>
+          <button id="capture-copy-link">Copy share link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Environment
+.env
+
+# Claude Code context (local dev only)
+CLAUDE.md
+
+# Generated data
+shared/*.json
+
+# Frontend build output
+frontend/dist/
+frontend/node_modules/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+backend/fetch_data.py
+
+# Tooling
+.gstack/
+

@@ -1,0 +1,41 @@
+// Static design tokens — compiled away at build time.
+// Use CSS custom properties (in _variables.scss) for anything that must change at runtime.
+
+// Z-index scale
+$z-ui:       10;
+$z-search:   12;
+$z-panel:    15;
+$z-settings: 16;
+$z-tooltip:  20;
+$z-modal:    30;
+
+// Border radius
+$radius-sm: 4px;
+$radius-md: 6px;
+$radius-lg: 7px;
+
+// Transitions
+$transition-fast: 0.15s;
+$transition-med:  0.3s;
+$transition-bar:  0.4s;
+
+// Typography
+$font-xs:   9px;
+$font-sm:  10px;
+$font-md:  11px;
+$font-lg:  12px;
+$font-xl:  13px;
+$font-2xl: 16px;
+$font-3xl: 17px;
+
+// Letter spacing
+$ls-tight:  0.3px;
+$ls-base:   0.5px;
+$ls-wide:   1px;
+$ls-wider:  1.5px;
+$ls-widest: 2.5px;
+
+// Layout
+$panel-width:    290px;
+$settings-width: 270px;
+$search-width:   280px;

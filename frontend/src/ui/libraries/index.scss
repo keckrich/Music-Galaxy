@@ -1,0 +1,187 @@
+@use '../../styles/tokens' as *;
+
+#lib-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px;
+}
+
+.lib-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+
+  &:last-child { border-bottom: none; }
+}
+
+.lib-name {
+  flex: 1;
+  font-size: $font-sm;
+  color: var(--text-2);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+
+  &:hover { color: var(--text-1); text-decoration: underline; }
+
+  .lib-active & { color: var(--text-1); cursor: default; text-decoration: none; }
+}
+
+.lib-rename-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--btn-bg);
+  border: 1px solid var(--border-hi);
+  border-radius: $radius-sm;
+  color: var(--text-2);
+  font-family: inherit;
+  font-size: $font-sm;
+  padding: 2px 6px;
+  outline: none;
+}
+
+.lib-count {
+  font-size: $font-xs;
+  color: var(--text-3);
+  flex-shrink: 0;
+  letter-spacing: $ls-tight;
+}
+
+.lib-badge {
+  font-size: $font-xs;
+  color: var(--accent);
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.lib-btn {
+  background: none;
+  border: 1px solid var(--btn-border);
+  border-radius: $radius-sm;
+  color: var(--text-3);
+  font-family: inherit;
+  font-size: $font-xs;
+  letter-spacing: $ls-wide;
+  padding: 2px 7px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) { border-color: var(--border-hi); color: var(--text-2); }
+  &:disabled { opacity: 0.3; cursor: default; }
+}
+
+.lib-btn-delete:hover:not(:disabled) {
+  color: #ff5566;
+  border-color: #ff5566;
+}
+
+// ── Conflict dialog ───────────────────────────────────────────────────
+
+.lib-conflict-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lib-conflict-dialog {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-hi);
+  border-radius: $radius-md;
+  padding: 24px 22px 20px;
+  width: 260px;
+  backdrop-filter: blur(20px);
+}
+
+.lib-conflict-title {
+  font-size: $font-sm;
+  letter-spacing: $ls-widest;
+  text-transform: uppercase;
+  color: var(--text-label);
+  margin-bottom: 8px;
+}
+
+.lib-conflict-name {
+  font-size: $font-lg;
+  color: var(--text-1);
+  margin-bottom: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lib-conflict-counts {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lib-conflict-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: $font-sm;
+
+  > span:first-child { color: var(--text-3); }
+  > span:last-child  { color: var(--text-2); }
+}
+
+.lib-conflict-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.lib-conflict-btn {
+  flex: 1;
+  padding: 7px 4px;
+  background: none;
+  border: 1px solid var(--btn-border);
+  border-radius: $radius-sm;
+  color: var(--text-3);
+  font-family: inherit;
+  font-size: $font-xs;
+  letter-spacing: $ls-wide;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover { border-color: var(--border-hi); color: var(--text-2); }
+}
+
+.lib-conflict-replace:hover {
+  border-color: #ff5566;
+  color: #ff5566;
+}
+
+// ── Upload row ────────────────────────────────────────────────────────
+
+.sp-upload-row {
+  margin-top: 2px;
+
+  button {
+    background: none;
+    border: 1px solid var(--btn-border);
+    border-radius: $radius-sm;
+    color: var(--text-3);
+    font-family: inherit;
+    font-size: $font-sm;
+    letter-spacing: $ls-wide;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all $transition-fast;
+    flex-shrink: 0;
+
+    &:hover:not(:disabled) { border-color: var(--border-hi); color: var(--text-2); }
+    &:disabled { opacity: 0.4; cursor: default; }
+  }
+}
