@@ -1,3 +1,6 @@
+
+
+
 # Music Galaxy
 
 A 3D interactive visualizer for your [AudioMuse-AI](https://github.com/NeptuneHub/AudioMuse-AI) music library. Every song in your collection becomes a star, positioned in 3D space by audio similarity — songs that sound alike cluster together. Built on top of AudioMuse's CLAP embeddings and UMAP dimensionality reduction.
@@ -10,6 +13,10 @@ A 3D interactive visualizer for your [AudioMuse-AI](https://github.com/NeptuneHu
 - Plays audio via Navidrome, Jellyfin, Emby, or Lyrion (Currently only supports Navidrome)
 
 ---
+https://github.com/user-attachments/assets/2534466c-db66-4a43-a43a-46f2608b485b
+
+<img alt="Music Galaxy 3D" src="https://github.com/user-attachments/assets/fb5f1211-86b8-4cf6-aaba-57e40aba02bb" />
+
 
 ## Adding to your AudioMuse stack
 
